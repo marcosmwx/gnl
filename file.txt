@@ -1,5 +1,5 @@
 TESTE DE TEXTO dentro de um arquivo separado entao aqui podemos ler um arquivo qualquer
-tudo é arquivo
+tudo e arquivo
 gogogo
 let
 s
