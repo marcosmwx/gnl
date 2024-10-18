@@ -9,7 +9,7 @@
 /*   Updated: 2024/10/18 15:55:24 by malopes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+/*
 #include "get_next_line.h"
 
 char *ft_copy_from(char *src, int n) {
@@ -92,3 +92,4 @@ char *ft_strdup(const char *src) {
     dup[len] = '\0';
     return dup;
 }
+*/
