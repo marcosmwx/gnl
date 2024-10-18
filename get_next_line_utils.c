@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fet_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: malopes- <malopes-@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:37:59 by malopes-          #+#    #+#             */
-/*   Updated: 2024/10/17 14:38:00 by malopes-         ###   ########.fr       */
+/*   Updated: 2024/10/18 15:55:24 by malopes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,10 @@ char *ft_strjoin(char *s1, char *s2)
         result[i] = s1[i];
         i++;
     }
-    int j = 0;
-    while (j < len2) {
-        result[len1 + j] = s2[j];
-        j++;
+    i = 0;
+    while (i < len2) {
+        result[len1 + i] = s2[i];
+        i++;
     }
     result[len1 + len2] = '\0';
     free(s1);

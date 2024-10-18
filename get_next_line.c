@@ -6,7 +6,7 @@
 /*   By: malopes- <malopes-@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 14:37:45 by malopes-          #+#    #+#             */
-/*   Updated: 2024/10/17 19:40:17 by malopes-         ###   ########.fr       */
+/*   Updated: 2024/10/18 15:07:43 by malopes-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ char *get_next_line(int fd) {
     int i;
     char *line = NULL;
 
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
     i = 0;
     while ((bytes_read = read(fd, temp, BUFFER_SIZE)) > 0) {
         temp[bytes_read] = '\0';
@@ -50,6 +52,7 @@ char *get_next_line(int fd) {
     if (bytes_read == 0 && buffer != NULL) {
         line = ft_copy_until(buffer, ft_strlen(buffer));
         free(buffer);
+        buffer = NULL;
         return line;
     }
     free(buffer);

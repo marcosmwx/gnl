@@ -19,7 +19,7 @@
 # include <stdio.h>
 # include <string.h>
 
-# define BUFFER_SIZE 15
+# define BUFFER_SIZE 5
 
 char    *get_next_line(int fd);
 char    *ft_strjoin(char *s1, char *s2);
