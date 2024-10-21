@@ -60,7 +60,10 @@ char *get_next_line(int fd) {
 }
 
 */
+
 char *ft_strchr(const char *s, int c) {
+    if (!s) 
+        return NULL;
     while (*s) {
         if (*s == (char)c) {
             return (char *)s;
@@ -71,78 +74,98 @@ char *ft_strchr(const char *s, int c) {
 }
 
 int ft_strlen(const char *s) {
-    int i = 0;
-    while (s[i] != '\0') {
+    int i;
+
+    if (!s) 
+        return (0);
+    i = 0;
+    while (s[i] != '\0')
         i++;
-    }
     return i;
 }
 
 char *ft_strdup(const char *src) {
+    int i;
+
+    i = 0;
+    if (!src)
+        return NULL;
     int len = ft_strlen(src);
     char *dup = (char *)malloc(sizeof(char) * (len + 1));
     if (!dup) return NULL;
-    for (int i = 0; i < len; i++)
+    while (src[++i] != '\0')
         dup[i] = src[i];
     dup[len] = '\0';
     return dup;
 }
 
 char *ft_strjoin(char *s1, char *s2) {
-    int len1 = ft_strlen(s1 ? s1 : "");
-    int len2 = ft_strlen(s2);
-    char *result = (char *)malloc(sizeof(char) * (len1 + len2 + 1));
-    if (!result) return NULL;
-    int i = 0;
-    if (s1) {
-        while (i < len1) {
-            result[i] = s1[i];
-            i++;
-        }
-        free(s1); // Libera o buffer antigo
-    }
-    for (int j = 0; j < len2; j++) {
-        result[i++] = s2[j];
-    }
-    result[i] = '\0';
+    int len1;
+    int len2;
+    char *result;
+    int i;
+
+    if (!s2) 
+        return s1;
+    if (!s1)
+        s1 = ft_strdup("");
+    len1 = ft_strlen(s1);
+    len2 = ft_strlen(s2);
+    result = (char *)malloc(sizeof(char) * ((len1 + len2) + 1));
+    if (!result)
+        return NULL;
+    i = -1;
+    while (++i < len1)
+        result[i] = s1[i];
+
+    i = -1;
+    while (++i < len2)
+        result[len1 + i] = s2[i];
+    result[len1 + len2] = '\0';
+    free(s1);
     return result;
 }
 
 char *ft_copy_until(char *src, int n) {
-    if (src == NULL || n < 0 || src[n] == '\0') {
-        return NULL; // Retorna NULL se n é inválido
-    }
-    char *dest = (char *)malloc(sizeof(char) * (n + 2)); // n + 1 para o '\n' e +1 para o '\0'
-    if (!dest) return NULL;
-    for (int i = 0; i <= n; i++) {
+    char *dest;
+    int i;
+
+    dest = (char *)malloc(sizeof(char) *(n + 2)); // n + 1 para o '\n' e +1 para o '\0'
+    if (!dest)
+        return NULL;
+    i = 0;
+    while (i <= n) {
         dest[i] = src[i];
+        i++;
     }
-    dest[n + 1] = '\0'; // Termina a string
+    dest[i] = '\0';
     return dest;
 }
 
 char *ft_copy_from(char *src, int n) {
-    if (src == NULL || src[n] == '\0') {
-        return NULL; // Retorna NULL se n é o final da string
-    }
+    if (src == NULL || src[n] == '\0')
+        return NULL;
     char *dest = (char *)malloc(sizeof(char) * (ft_strlen(src + n) + 1));
-    if (!dest) return NULL;
+    if (!dest)
+         return NULL;
     int i = 0;
     while (src[n + i] != '\0') {
         dest[i] = src[n + i];
         i++;
     }
-    dest[i] = '\0'; // Termina a string
+    dest[i] = '\0';
     return dest;
 }
 
 static char *extract_line_from_buffer(char **buffer, int i) {
-    char *line = ft_copy_until(*buffer, i);
-    if (!line) return NULL;
-
+    char *line;
+    
+    line = ft_copy_until(*buffer, i);
+    if (!line)
+        return NULL;
     char *remaining = ft_copy_from(*buffer, i + 1);
     free(*buffer);
-    *buffer = remaining; // Atualiza o buffer
+    *buffer = remaining;
     return line;
 }
 
@@ -158,7 +181,8 @@ char *get_next_line(int fd) {
     while ((bytes_read = read(fd, temp, BUFFER_SIZE)) > 0) {
         temp[bytes_read] = '\0';
         buffer = ft_strjoin(buffer, temp);
-        if (!buffer) return NULL; // Verifica se a junção foi bem-sucedida
+        if (!buffer)
+            return NULL;
 
         // Verifica se o buffer contém um '\n'
         if (ft_strchr(buffer, '\n')) {
@@ -172,15 +196,28 @@ char *get_next_line(int fd) {
         }
     }
 
+    // Verificação final: se o arquivo acabou e o buffer contém '\n'
     if (bytes_read == 0 && buffer != NULL) {
-        // Retorna a última linha se buffer não é nulo
-        char *line = ft_copy_until(buffer, ft_strlen(buffer) - 1);
-        free(buffer);
-        buffer = NULL;
-        return line;
+        if (ft_strchr(buffer, '\n')) {
+            i = 0;
+            while (buffer[i] != '\0') {
+                if (buffer[i] == '\n') {
+                    return extract_line_from_buffer(&buffer, i);
+                }
+                i++;
+            }
+        }
+        // Se chegamos ao fim e o buffer tem conteúdo restante (sem '\n')
+        if (*buffer != '\0') {
+            char *line = ft_copy_until(buffer, ft_strlen(buffer) - 1);
+            free(buffer);
+            buffer = NULL;
+            return line;
+        }
     }
 
+    // Limpeza do buffer se nada mais restar
     free(buffer);
-    buffer = NULL; // Garante que o buffer seja limpo
+    buffer = NULL;
     return NULL;
 }
