@@ -31,11 +31,11 @@ static char	*extract_line(char **buffer)
 	char	*line;
 	char	*remaining;
 
+	i = 0;
 	if (!*buffer)
 		return (NULL);
 	if (ft_strchr(*buffer, '\n'))
 	{
-		i = 0;
 		while ((*buffer)[i] != '\0')
 		{
 			if ((*buffer)[i] == '\n')
@@ -74,40 +74,40 @@ static char	*process_final_buffer(char **buffer, int bytes_read)
 	*buffer = NULL;
 	return (NULL);
 }
-static char *process_reading(int fd, char *temp, char **buffer)
+
+static char	*process_reading(int fd, char *temp, char **buffer)
 {
-    int bytes_read;
-    char *line;
+	int		bytes_read;
+	char	*line;
 
-    while ((bytes_read = read(fd, temp, BUFFER_SIZE)) > 0)
-    {
-        temp[bytes_read] = '\0';
-        *buffer = ft_strjoin(*buffer, temp);
-        if (!*buffer)
-            return (NULL);
-
-        line = extract_line(buffer);
-        if (line)
-            return line;
+	bytes_read = read(fd, temp, BUFFER_SIZE);
+	while (bytes_read > 0)
+	{
+		temp[bytes_read] = '\0';
+		*buffer = ft_strjoin(*buffer, temp);
+		if (!*buffer)
+			return (NULL);
+		line = extract_line(buffer);
+		if (line)
+			return (line);
+		bytes_read = read(fd, temp, BUFFER_SIZE);
 	}
-    return process_final_buffer(buffer, bytes_read); // Processa o buffer final
+	return (process_final_buffer(buffer, bytes_read));
 }
 
-char *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-    static char *buffer = NULL;
-    char *temp;
-    char *line;
+	static char	*buffer = NULL;
+	char		*temp;
+	char		*line;
 
-    temp = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
-    if (!temp || fd < 0 || BUFFER_SIZE <= 0)
-    {
-        free(temp);
-        return (NULL);
-    }
-
-    // Chama a função auxiliar para processar a leitura
-    line = process_reading(fd, temp, &buffer);
-    free(temp); // Libera a memória de temp
-    return line; // Retorna a linha extraída ou NULL
+	temp = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!temp || fd < 0 || BUFFER_SIZE <= 0)
+	{
+		free(temp);
+		return (NULL);
+	}
+	line = process_reading(fd, temp, &buffer);
+	free(temp);
+	return (line);
 }
