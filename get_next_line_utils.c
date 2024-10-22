@@ -30,7 +30,7 @@ char	*ft_strdup(const char *src)
 	int		len;
 	char	*dup;
 
-	i = 0;
+	i = -1;
 	if (!src)
 		return (NULL);
 	len = ft_strlen(src);
