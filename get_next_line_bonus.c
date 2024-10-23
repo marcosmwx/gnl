@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*ft_strchr(const char *s, int c)
 {
@@ -97,138 +97,17 @@ static char	*process_reading(int fd, char *temp, char **buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer = NULL;
+	static char	*buffer[MAX_FD] = {NULL};
 	char		*temp;
 	char		*line;
 
 	temp = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (!temp || fd < 0 || BUFFER_SIZE <= 0)
+	if (!temp || fd < 0 || fd >= MAX_FD || BUFFER_SIZE <= 0)
 	{
 		free(temp);
 		return (NULL);
 	}
-	line = process_reading(fd, temp, &buffer);
+	line = process_reading(fd, temp, &buffer[fd]);
 	free(temp);
 	return (line);
 }
-/*
-#include "get_next_line.h"
-
-static char	*ft_strchr(const char *s, int c)
-{
-	if (!s)
-		return (NULL);
-	while (*s)
-	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s++;
-	}
-	return (NULL);
-}
-
-static char	*extract_line(char **buffer)
-{
-	int		i;
-	char	*line;
-	char	*remaining;
-
-	i = 0;
-	if (!*buffer)
-		return (NULL);
-	if (ft_strchr(*buffer, '\n'))
-	{
-		while ((*buffer)[i] != '\0')
-		{
-			if ((*buffer)[i] == '\n')
-			{
-				line = ft_copy_until(*buffer, i);
-				if (!line)
-					return (NULL);
-				remaining = ft_copy_from(*buffer, i + 1);
-				free(*buffer);
-				*buffer = remaining;
-				return (line);
-			}
-			i++;
-		}
-	}
-	return (NULL);
-}
-
-static char	*process_final_buffer(char **buffer, int bytes_read)
-{
-	char	*line;
-
-	if (bytes_read == 0 && *buffer != NULL)
-	{
-		if (ft_strchr(*buffer, '\n'))
-			return (extract_line(buffer));
-		if (**buffer != '\0')
-		{
-			line = ft_copy_until(*buffer, ft_strlen(*buffer));
-			free(*buffer);
-			*buffer = NULL;
-			return (line);
-		}
-	}
-	free(*buffer);
-	*buffer = NULL;
-	return (NULL);
-}
-
-static char	*process_reading(int fd, char *temp, char **buffer)
-{
-	int		bytes_read;
-	char	*line;
-
-	bytes_read = read(fd, temp, BUFFER_SIZE);
-	while (bytes_read > 0)
-	{
-		temp[bytes_read] = '\0';
-		*buffer = ft_strjoin(*buffer, temp);
-		if (!*buffer)
-			return (NULL);
-		line = extract_line(buffer);
-		if (line)
-			return (line);
-		bytes_read = read(fd, temp, BUFFER_SIZE);
-	}
-	return (process_final_buffer(buffer, bytes_read));
-}
-
-char	*get_next_line(int fd)
-{
-	static char	*buffer = NULL;
-	char		*temp;
-	char		*line;
-
-	temp = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (!temp || fd < 0 || BUFFER_SIZE <= 0)
-	{
-		free(temp);
-		return (NULL);
-	}
-	line = process_reading(fd, temp, &buffer);
-	free(temp);
-	return (line);
-}
-
-char	*get_next_line(int fd)
-{
-    static char	*buffer = NULL;
-    char		*temp;
-    char		*line;
-
-    if (fd < 0 || fd >= 1024 || BUFFER_SIZE <= 0)
-        return (NULL);
-
-    temp = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
-    if (!temp)
-        return (NULL);
-
-    line = process_reading(fd, temp, &buffer);
-    free(temp);
-    return (line);
-}
-*/
