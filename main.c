@@ -11,24 +11,40 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
 
 int	main(void)
 {
-	int		fd;
+	int		bytes_read;
 	char	*line;
+	int	fd;
 
-	fd = open("file.txt", O_RDONLY);
+	fd = 3;
+	bytes_read = open("file.txt", O_RDONLY);
 	if (fd < 0)
 	{
 		perror("Erro ao abrir o arquivo");
 		return (1);
 	}
+
 	line = get_next_line(fd);
-	while (line != NULL)
+	printf("%s", line);
+	free(line);
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
+
+	/*
+	while ((line = get_next_line(fd)))
 	{
-		printf("%s\n", line);
-		free(line);
+		printf("%s", line);
+		//printf("FD: %d\n", fd);
+		//printf("BUFFER_SIZE NO MAIN: %d\n", BUFFER_SIZE);
 	}
+	*/
 	close(fd);
 	return (0);
 }

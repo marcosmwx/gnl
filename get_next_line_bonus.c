@@ -97,7 +97,7 @@ static char	*process_reading(int fd, char *temp, char **buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer[MAX_FD] = {NULL};
+	static char	*buffer[MAX_FD];
 	char		*temp;
 	char		*line;
 
